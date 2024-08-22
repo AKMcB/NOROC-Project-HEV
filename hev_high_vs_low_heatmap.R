@@ -1,7 +1,7 @@
 
-#############
-# Libraries #
-#############
+###############
+## Libraries ##
+###############
 library(ComplexHeatmap)
 library(RColorBrewer)
 library(gplots)
@@ -12,9 +12,9 @@ library(clValid)
 library(dendsort)
 library(fgsea)
 
-#########################
-# Read expression file ##
-#########################
+##########################
+## Read expression file ##
+##########################
 
 expr <- read.csv2("example_expr_file", sep = ";", as.is = T,check.names = F)
 expr <- expr[,-c(2,3)]
@@ -64,9 +64,9 @@ str(merged)
 merged <- merged %>% mutate_all(as.numeric)
 
 
-###############################
-# Calculate cluster stability #
-###############################
+#################################
+## Calculate cluster stability ##
+#################################
 
 #Patients has to be in rownames therefore use t(merged) in the function 
 #This will not change the df and the genes will still be in rownames when 
@@ -75,9 +75,9 @@ internal <- clValid(t(merged), method = "complete", metric = "correlation", clMe
 plot(internal, legend = FALSE)
 
 
-##################
-# Create Heatmap #
-##################
+####################
+## Create Heatmap ##
+####################
 
 #The genes should be in the rownames
 h <- as.matrix(merged) #Create a matrix of the main expression file 
@@ -211,9 +211,3 @@ dev.off()
 png("heatmap_high_low_hev_updated_patients.png", res=200, height = 2000, width = 2000)
 print(ht)
 dev.off() 
-
-
-
-
-
-
