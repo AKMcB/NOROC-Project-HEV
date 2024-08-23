@@ -1,12 +1,20 @@
-###############
-## Libraries ##
-###############
+#############
+# Libraries #
+#############
+
 library(tidyverse)
 library(data.table)
 
-#Read cluster information
+#####################
+# Read cluster info #
+#####################
+
 id <- as.data.frame(fread("example_cluster_info_from_heatmap.csv", header = TRUE))
 id$V1 <- NULL
+
+######################
+# Read clinical info #
+######################
 
 info <- read.csv2("example_clinical_file.csv")
 info <- info[,c(1,52:53)]
