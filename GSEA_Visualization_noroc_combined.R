@@ -1,9 +1,15 @@
+#############
+# Libraries #
+#############
+
 library(data.table)
 library(fgsea)
 library(ggpubr)
 library(tidyverse)
 
-#Run the GSEA analysis with GSEA software. 
+#####################
+# Read GSEA results #
+#####################
 
 high_all<-as.data.frame(fread("hallmark_cluster1_vs_cluster2_all_proteins_noroc.Gsea.1707483329832/gsea_report_for_cluster1_1707483329832.tsv"))
 high_all <- high_all[1:20,]
@@ -14,11 +20,9 @@ high_1 <- high_1[1:20,]
 high_2 <- as.data.frame(fread("kegg_legacy_cluster2_high_vs_low_hev_all_proteins_noroc.Gsea.1707488233830/gsea_report_for_High_1707488233830.tsv"))
 high_2 <- high_2[1:20,]
 
-
 high_all <- high_all[,c(1,6,8)]
 high_1 <- high_1[,c(1,6,8)]
 high_2 <- high_2[,c(1,6,8)]
-
 
 high_all <- high_all %>% mutate(source = "Cluster 1")
 high_1 <- high_1 %>% mutate(source = "Cluster 2")
@@ -31,11 +35,11 @@ merged <- merged[complete.cases(merged$NAME), ]
 merged$NAME <- gsub("HALLMARK_", "", merged$NAME)
 merged$NAME <- gsub("_", " ", merged$NAME)
 
+# Order the combinations of results
 pathway_counts <- merged %>%
   group_by(NAME) %>%
   summarise(count = n_distinct(source),
             source_combination = paste(sort(unique(source)), collapse = ", ")) %>%
-  #filter(count > 1) %>% #filter unshared pathways
   mutate(priority = case_when(
     source_combination == "HEV High All Patients, HEV High Cluster 1, HEV High Cluster 2" ~ 1,
     source_combination == "HEV High All Patients, HEV High Cluster 1" ~ 2,
@@ -61,7 +65,9 @@ ordered_pathways <- average_scores %>%
 
 merged_1$NAME <- factor(merged_1$NAME, levels = ordered_pathways)
 
-
+#############
+# Tileplots #
+#############
 
 nes <- ggplot(merged_1, aes(x = source, y = reorder(NAME, priority, decreasing = T) , fill = NES)) +
   geom_tile(color = "black", size = 0.6)  +
@@ -107,4 +113,3 @@ dev.off()
 pdf("shared_hallmarks_hev_high_fdr_v2.pdf", width = 8, height = 8, onefile = F)
 print(fdr)
 dev.off()
-
