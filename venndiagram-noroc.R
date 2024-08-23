@@ -1,14 +1,14 @@
-###############
-## Libraries ##
-###############
+#############
+# Libraries #
+#############
 
 library(data.table)
 library(VennDetail)
 library(ggvenn)
 
-#######################
-## Read gsea results ##
-#######################
+#####################
+# Read gsea results #
+#####################
 
 high_all <- as.data.frame(fread("GSEA/hallmark_leg_hev_high_vs_low_all_proteins.Gsea.1705919994552/gsea_report_for_High_1705919994552.tsv"))
 high_all <- high_all[1:20,] #only if there are 20 more pathways
@@ -30,9 +30,9 @@ all <- all[,"NAME"]
 cluster1 <- cluster1[,"NAME"]
 cluster2 <- cluster2[,"NAME"]
 
-##################
-## Venn Diagram ##
-##################
+################
+# Venn Diagram #
+################
 
 overlap_list <- list("All Patients" = all, "Cluster 1" = cluster1, "Cluster 2" = cluster2)
 overlap_plot <- venndetail(overlap_list) #identify overlapping terms
