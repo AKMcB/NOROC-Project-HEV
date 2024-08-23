@@ -1,3 +1,6 @@
+#############
+# Libraries #
+#############
 
 library(survival)
 library(survminer)
@@ -8,8 +11,10 @@ library(lubridate)
 library(grid)
 library(gridExtra)
 library(data.table)
-#-------------------------------------------------------------------------------------
-#Subsetting the TCGA dataset based on Cluster
+
+###################
+# Expression File #
+###################
 
 expr <- read.csv2("example_expr_file.csv", sep = ";", as.is = T, check.names = F)
 expr <- expr[,-c(2,3)]
@@ -23,6 +28,9 @@ expr$id <- NULL
 expr <- as.data.frame(t(expr))
 expr <- tibble::rownames_to_column(expr, "id")
 
+################
+# Cluster Info #
+################
 
 patient <- read.csv2("example_cluster_info_from_heatmap.csv")
 patient <- patient[,-1]
@@ -41,7 +49,6 @@ merged <- merge(merged, info, by.x="id", by.y = "PID")
 nonMatch_Uniquedf2 <- info %>% 
   filter(!info$PID %in% expr$id)
 
-
 #Divide data based on either high or low HEV level 
 #2=High 1=Low
 high <- subset(merged, merged$HEV_score_LowHigh_mean == "2")
@@ -49,7 +56,6 @@ low <- subset(merged, merged$HEV_score_LowHigh_mean == "1")
 
 cluster1 <- subset(merged, merged$Cluster == "cluster1")
 cluster2 <- subset(merged, merged$Cluster == "cluster2")
-
 
 merged_1 <- subset(merged, merged$Cluster == "cluster1")
 high_1 <- subset(merged_1, merged_1$HEV_score_LowHigh_mean == "High")
@@ -103,9 +109,10 @@ low_2 <- low_2[,-1]
 low_2 <- as.data.frame(t(low_2))
 colnames(low_2) <- paste("low_2",colnames(low_2), sep= "_")
 
-#----------------------------------------------------------------------------------------------
-#Merging the expression files for GSEA
-#Merge the files 
+#####################
+# Prepare GSEA File #
+#####################
+
 comb <- cbind(cluster1, cluster2)
 
 comb_1 <- cbind(high_1, low_1)
